@@ -1,10 +1,23 @@
 function Node() {
 	this.type = null;
-	this.value = null;
+	this.bound_variable = null;
 	this.child1 = null;
 	this.child2 = null;
 	this.parent = null;
-	this.variables = new Array();
+	this.variables = new Object();
+}
+
+Node.prototype.pass_variables_up = function () {
+	for (var name in this.variables) {
+		if (this.variables.hasOwnProperty(name)) {
+			if (this.parent.variables.hasOwnProperty(name)) {
+				this.parent.variables[name].free = this.variables[name].free || this.parent.variables[name].free;
+				this.parent.variables[name].bound = this.variables[name].bound || this.parent.variables[name].bound;
+			} else {
+				this.parent.variables[name] = { free : this.variables[name].free, bound : this.variables[name].bound };
+			}
+		}
+	}
 }
 
 var str = "{\\x[{x}(x)]}(    \\x[{x}(x)])";
@@ -20,15 +33,13 @@ for(var i = 0; i < str.length; ++i) {
 		case '\\':
 			current.type = "abstraction";
 			current.child1 = new Node();
-			current.child2 = new Node();
 			current.child1.parent = current;
-			current.child2.parent = current;
 			
 			++i;
 			if (str[i].search(/[a-zA-Z]/) == -1)
 				throw "Ill-formed.";
-			current.child1.type = "variable";
-			current.child1.value = str[i];
+			current.bound_variable = str[i];
+			
 			break;
 			
 		case '{':
@@ -41,31 +52,43 @@ for(var i = 0; i < str.length; ++i) {
 			break;
 			
 		case '}':
+			current.pass_variables_up();
 			current = current.parent;
+			if (current.type != "application")
+				throw "Ill-formed.";
 			break;
 			
 		case '[':
 			if (current.type != "abstraction")
-				throw "Ill-formed";
-			current = current.child2;
+				throw "Ill-formed.";
+			current = current.child1;
 			break;
 			
 		case ']':
+			current.pass_variables_up();
 			current = current.parent;
 			if (current.type != "abstraction")
-				throw "Ill-formed";
+				throw "Ill-formed.";
+				
+			if (!current.variables[current.bound_variable])
+				throw "Ill-formed.";
+			if (!current.variables[current.bound_variable].free)
+				throw "Ill-formed.";
+			current.variables[current.bound_variable].free = false;
+			current.variables[current.bound_variable].bound = true;
 			break;
 			
 		case '(':
 			if (current.type != "application")
-				throw "Ill-formed";
+				throw "Ill-formed.";
 			current = current.child2;
 			break;
 			
 		case ')':
+			current.pass_variables_up();
 			current = current.parent;
 			if (current.type != "application")
-				throw "Ill-formed";
+				throw "Ill-formed.";
 			break;
 			
 		default:
@@ -74,6 +97,7 @@ for(var i = 0; i < str.length; ++i) {
 			if (current.type)
 				throw "Ill-formed.";
 			current.type = "variable";
-			current.value = str[i];
+			current.variables[str[i]] = { free : true, bound : false };
 	}
 }
+
