@@ -202,6 +202,7 @@ Node.prototype.reduce = function () { // This is run from the application node.
 			this.parent.child1 = this.child1.child1;
 		if (this == this.parent.child2)
 			this.parent.child2 = this.child1.child1;
+		this.child1.child1.parent = this.parent;
 	} else {
 		global_root = this.child1.child1;
 		global_root.parent = null;
