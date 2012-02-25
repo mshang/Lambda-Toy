@@ -1,7 +1,6 @@
 ﻿// TODO:
 // Add support for abbreviations.
 // Use form so that hitting enter submits.
-// Once a link is clicked, all other links on the same line should be disabled.
 
 // Event Listener legacy code from https://developer.mozilla.org/en/DOM/element.removeEventListener
 if (!Element.prototype.addEventListener) {
@@ -261,8 +260,13 @@ Node.prototype.reduce = function () { // This is run from the application node.
 	}
 	
 	global_root.find_variables();
-	print(global_root, document.getElementById("reduction"));
 };
+
+function reduce_listener() {
+	this.refers_to.reduce();
+	clear_links(this.parentNode);
+	print(global_root, document.getElementById("reduction"));
+}
 
 Node.prototype.find_next_valid_name = function () {
 	var i = 0;
@@ -296,8 +300,24 @@ Node.prototype.rename = function () {
 	var next_valid_name = this.find_next_valid_name();
 	this.recursive_rename(next_valid_name, this.value);
 	global_root.find_variables();
-	print(global_root, document.getElementById("reduction"));
 };
+
+function rename_listener() {
+	this.refers_to.rename();
+	clear_links(this.parentNode);
+	print(global_root, document.getElementById("reduction"));
+}
+
+function clear_links(span) {
+	// Links are direct children of the given span.
+	// Clears the event listeners associated with those links.
+	var current = span.firstChild;
+	while (current) {
+		current.removeEventListener("click", rename_listener, false);
+		current.removeEventListener("click", reduce_listener, false);
+		current = current.nextSibling;
+	}
+}
 
 function print(root, span) {
 	var new_line = document.createElement("span");
@@ -318,7 +338,7 @@ Node.prototype.stringify = function (span) {
 			link.appendChild(document.createTextNode("λ"));
 			link.setAttribute("href", "#");
 			link.refers_to = this.parent;
-			link.addEventListener("click", function(){this.refers_to.reduce()});
+			link.addEventListener("click", reduce_listener, false);
 			span.appendChild(link);
 		} else {
 			span.appendChild(document.createTextNode("λ"));
@@ -329,7 +349,7 @@ Node.prototype.stringify = function (span) {
 			link.appendChild(document.createTextNode(this.value));
 			link.setAttribute("href", "#");
 			link.refers_to = this;
-			link.addEventListener("click", function(){this.refers_to.rename()});
+			link.addEventListener("click", rename_listener, false);
 			span.appendChild(link);
 		} else {
 			span.appendChild(document.createTextNode(this.value));
