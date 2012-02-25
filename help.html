@@ -1,0 +1,25 @@
+﻿<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=9" >
+<title>Lambda Toy Help</title>
+<style type="text/css">span { font-family : monospace; background-color : #DDDDDD; }</style>
+</head>
+<body style="background-color:AntiqueWhite">
+<h2>Help</h2>
+This app has only been tested for Google Chrome. It may or may not work on other browsers.<br /><br />
+Lambda Toy verifies whether or not your expression is a well-formed formula in the lambda-calculus according to the definition of (Church, 1936). If it is a wff, it allows you to carry out the operations of alpha-conversion and beta-reduction.<br /><br />
+To input your expression, type it into the text area and click submit. The symbol lambda may be substituted by a backslash <span>\</span>. This app recognizes well-formed formulas according to the following definition:<br /><br />
+(Church, 1936)<br />
+We select a particular list of symbols, consisting of the symbols <span>{</span>, <span>}</span>, <span>(</span>, <span>)</span>, <span>λ</span>, <span>[</span>, <span>]</span>, and an enumerably infinite set of symbols <span>a</span>, <span>b</span>, <span>c</span>,... to be called variables. And we define the word formula to mean any finite sequence of symbols out of this list. The terms well-formed formula, free variable, and bound variable are then defined by induction as follows.<br />
+- A variable <span><b>x</b></span> standing alone is a well-formed formula and the occurrence of <span><b>x</b></span> in it is an occurrence of <span><b>x</b></span> as a free variable in it.<br />
+- If the formulas <span><b>F</b></span> and <span><b>X</b></span> are well-formed, <span>{<b>F</b>}(<b>X</b>)</span> is well-formed and an occurrence of <span><b>x</b></span> as a free (bound) variable in <span><b>F</b></span> or <span><b>X</b></span> is an occurrence of <span><b>x</b></span> as a free (bound) variable in <span>{<b>F</b>}(<b>X</b>)</span>.<br />
+- If the formula <span><b>M</b></span> is well-formed and contains an occurrence of <span><b>x</b></span> as a free variable in <span><b>M</b></span>, then <span>λ<b>x</b>[<b>M</b>]</span> is well-formed, and an occurrence of <span><b>x</b></span> in <span>λ<b>x</b>[<b>M</b>]</span> is an occurrence of <span><b>x</b></span> as a bound variable in <span>λ<b>x</b>[<b>M</b>]</span>, and an occurrence of a variable <span><b>y</b></span>, other than <span><b>x</b></span>, as a free (bound) variable in <span><b>M</b></span> is an occurrence of <span><b>y</b></span> as a free (bound) variable in <span>λ<b>x</b>[<b>M</b>]</span>.<br /><br />
+In the future, I plan to include support for abbreviations like <span>λfx.f(x)</span>.<br />
+If your expression is recognized as a wff, you can carry out the following operations:<br /><br />
+(Church, 1936)<br />
+I. To replace any part <span>λ<b>x</b>[<b>M</b>]</span> of a formula by <span>λ<b>y</b>[S(<b>x</b>, <b>y</b>, <b>M</b>)]</span> where <span><b>y</b></span> is a variable which does not occur in <span><b>M</b></span>.<br />
+II. To replace any part <span>{λ<b>x</b>[<b>M</b>]}(<b>N</b>)</span> of a formula by <span>S(<b>x</b>, <b>N</b>, <b>M</b>)</span>, provided that the bound variables in <span><b>M</b></span> are distinct both from <span><b>x</b></span> and from the free variables in <span><b>N</b></span>.<br /><br />
+<span>S(<b>x</b>, <b>N</b>, <b>M</b>)</span> refers to the formula obtained by replacing all instances of x in the formula <span><b>M</b></span> by the formula <span><b>N</b></span>. Operation I is called alpha-conversion, or renaming. Operation II is called beta-reduction, or reducing. These operations are carried out by clicking on links. A bound variable will appear as a link at the site where it is bound. By clicking on this link, the variable will be renamed. For example, clicking on the link in <span>λ<a href="#">x</a>[x]</span> gives <span>λy[y]</span>. Whenever Operation II can be performed, the lambda symbol corresponding to it will appear as a link. Clicking on that link will reduce the formula. For example, clicking on the link in <span>{<a href="#">λ</a>x[x]}(y)</span> will give <span>y</span>.<br /><br />
+Church, Alonzo (1936). "<a href="http://www.jstor.org/stable/2371045?origin=crossref">An Unsolvable Problem of Elementary Number Theory</a>". American Journal of Mathematics 58 (58): 345–363.
+</body>
+</html>
