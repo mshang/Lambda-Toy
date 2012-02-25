@@ -9,11 +9,18 @@
 <a href="help.html">Help</a> -- 
 <a href="LICENSE.txt">License</a> -- 
 Please send suggestions to <a href="mailto:mail@mshang.ca">mail@mshang.ca</a><br />
+<form id="f">
 <input type="text" id="formula" size="50" value="{\f[\x[{f}({f}(x))]]}(\f[f])">
-<input type="submit" onclick="submit();"><br /><br />
+<input type="submit">
+</form>
 <span id="wf"></span><br />
 <span id="reduction"></span>
-
 <script type="text/javascript" src="ltoy.js"></script>
+<script type="text/javascript">
+document.getElementById("f").onsubmit = function () {
+    submit();
+    return false;
+}
+</script>
 </center></body>
 </html>

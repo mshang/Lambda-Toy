@@ -1,6 +1,5 @@
 ﻿// TODO:
 // Add support for abbreviations.
-// Use form so that hitting enter submits.
 
 // Event Listener legacy code from https://developer.mozilla.org/en/DOM/element.removeEventListener
 if (!Element.prototype.addEventListener) {
